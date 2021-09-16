@@ -172,7 +172,7 @@ Point of presence (edge locations)
 
 ### EBS Volumes
 
-- Elastic Book Store
+- Elastic Block Store
 - network drive you can attach to instances
 - your isntance can persist data even after they are terminated
 - can only be mounted to onoe instance a a time
@@ -200,7 +200,7 @@ Point of presence (edge locations)
 ### EC2 Instance Store
 
 - physically attached to the ec2
-- lost of ec2 instance is shutdown
+- lost i ec2 instance is shutdown
 - not a durable long term data store
 - good for buffer/cache/scratch data/temporary content
 - risk of data loss if hardware fails
@@ -212,3 +212,32 @@ Point of presence (edge locations)
 - io1/io2: high performance SSD
 - st 1 low cost HDD 
 - sc 1 lowest cost HDD
+
+### EBS Multi Attach
+
+- Attach the same EBS volume to multiple EC2 instances in the same AZ
+- Achieve higher application availability in clustered linux applications
+- application must manage concurrent write operations
+- must use a file system that is cluster aware
+
+### Elastic File System
+
+- Managed network file system that can be mounted on many EC@
+- EFS works with EC@ instances in multi-az
+- highly available
+- expensive
+- Can be mounted on many EC2 instances
+- works across multiple EC2 instances
+- Use cases: content management, web servers, data sharing, wordpress
+- use security group to control access to EFS
+- Only compatible with linux based Amazon Machine Images
+
+### EBS Vs. EFS
+
+- EBS volumes can only be attached to one instance at a time and are locked to a single AZ
+- Root EBS volumes of instances get terminated by default
+- Can be mounted to multiple EC2 across different Availability Zones
+- EFS share website files
+- EFS is only for linux instances
+- EFS is more expensive (3x)
+- Can use EFS Infrequent Access for infrequently accessed files for cost savings
