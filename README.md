@@ -241,3 +241,90 @@ Point of presence (edge locations)
 - EFS is only for linux instances
 - EFS is more expensive (3x)
 - Can use EFS Infrequent Access for infrequently accessed files for cost savings
+
+## Elastic Load Balancing
+
+### Scalability & High Availability
+
+Scalability means the application / system can handle greater loads by adapting
+
+There are two kinds of scalability
+
+- Vertical scalability
+  - Increase the size of your instance
+  - e.g. go from a t2.micro to a t2.large
+  - common in non distributed systems for example a database
+  - Hardware limits
+
+- Horizontal scalability (elasticity)
+  - Increase the number of instances / systems for your application
+  - distributed systems
+  - Cloud makes this easy
+
+High availability
+
+- Usually goes hand in hand with high availability
+- Means running your app in at least 2 data centers (Availability Zones)
+- The goal is to survive a data center loss / outage
+
+### Load Balancing
+
+- Servers that forward traffic to multiple services (e.g. EC2 instances)
+- Spread load across multiple downstream instances
+- expose a single point of access (DNS to your application)
+- Seamlessly handle faulures of downstream instances
+- Provide SSL termination for your websites
+- Enforce stickiness with cookies
+- High availability across zones
+- Separate public traffic from private traffic
+
+### Elastic Load Balancer
+
+- managed load balancer
+- aws provides configuration
+- integrated with many aws services
+- uses health check to port and route health to check health and route traffic to healthy instances
+
+### Types of Load balancers on AWS
+
+#### Classic CLB 
+
+- uses TCP
+- HTTP HTTPS TCP SSL
+- Deprecated
+- Fixed hostname
+
+#### Application Load Balancer (ALB)
+
+- HTTP HTTPS Websocket
+- Uses HTTP
+- load balancing to multiple http applications
+- routing based on different target groups
+  - e.g. routing based on URL
+  - hostname
+- Good for micro-services and container based application (e.g. docker & amazon ecs)
+- Has port mapping to redirect to a dynamic port in ECS
+- comes with a fixed hostname
+- app servers dont see ip of the client directly
+  - The true ip of the client is inserted in the header x-forwarded-for
+  - Add the port c-forwarder-port
+  - protocol x-forwarded-proto
+
+#### Network Load Balancer (NLB)
+
+#### Gateway Load Balancer
+
+- Operates at layer 3 (network layer)
+- IP Protocol
+
+### Load Balancer Security
+
+- Any incoming http/s requests on security groups
+- Then EC2 instances should then only allow incoming HTTP traffic from your load balancer
+
+### Target Groups
+
+- EC2 instances
+- ECS tasks
+- Lambda functions
+- IP addresses (must be private)
