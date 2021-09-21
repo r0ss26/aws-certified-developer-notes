@@ -512,3 +512,71 @@ High availability
 - costs more than RDS
 - Stores 6 copies of your data across 3 az
 - striped across 100's of volumes
+- Writer endpoint for writing data
+- reader endpoint for reading data which is connected to read replicas via a load balancer
+- Don't connect via the dns address - connect via the relevant endpoint
+
+### Amazon Elasticache
+
+- Managed Redis or Memcached
+- Caches are in-memory databases with really high performance, low latency
+- Reduces load off of databases for read intensive workloads
+- Helps make your application stateless
+- Involves heavy application code changes
+- Architecture
+  - App queries elasticache
+  - if not available, get from rds and store in elasticache
+- User session store
+  - user logs in
+  - app writes the sessions data into elasticache
+  - the user hits another instance of the application
+  - the instance retrieves the data from the cache and is already logged in
+- Redis
+  - Multi AZ with auto-failover
+  - Read replicas to scale reads and have high availability
+  - data durability
+  - backup and restore features
+- Memcached
+  - Multi-node for partitioning (sharding)
+  - No high availability
+  - Non persistent
+  - No backup and restore
+  - Multi-threaded architecture
+
+- Strategies
+  - https://aws.amazon.com/caching/best-practices/
+  - some data shouldn't be cached because it needs to correct e.g. price at checkouut
+  - Lazy Loading / Cache-aside / lazy population
+    - application reads from the cache
+    - if not available in the cache query the database (cache miss)
+    - store the data in the cache and return the data to the application
+      - pros
+        - only requested data is cached, memory efficient
+        - node failures are not fatal
+      - cons
+        - If there is a cache miss there are 3 network calls (noticeable delay for the request)
+        - stale data can be updated in the database and outdated in the cache
+  - Write through
+    - Add or update cache when database is updated
+    - When a write occurs to the database write to the cache at the same time so it is available in the cache for all reads
+    - Pros
+      - data is never stale
+      - Write penalty vs read penalty (users expect a write to take longer than a read)
+    - Cons
+      - Missing data until it is added/updated, cache doesn't have all the data until it is written
+      - To mitigate this you can combine write through with lazy loading
+      - There will be a lot data in the cache that might not be necessary
+- Cache evictions and Time To Live
+  - Three possibilities
+    - You delete the item explicitly from the cache
+    - The item is evicted because the memory is full and it's not recently used
+    - You set a TTL or expiration
+- Elasticache replication
+  - Cluster mode disabled
+    - One primary node, up to 5 replicas
+    - asynchronous replication
+    - primary node is read/write, the other nodes are read-only
+    - one shard, all nodes have all the data
+  - Cluster mode enabled
+    - Data is partitioned across shards
+    - Each shard has a primary and up to 5 replica nodes
