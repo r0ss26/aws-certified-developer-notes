@@ -222,7 +222,7 @@ Point of presence (edge locations)
 
 ### Elastic File System
 
-- Managed network file system that can be mounted on many EC@
+- Managed network file system that can be mounted on many EC2 instances
 - EFS works with EC@ instances in multi-az
 - highly available
 - expensive
@@ -580,3 +580,41 @@ High availability
   - Cluster mode enabled
     - Data is partitioned across shards
     - Each shard has a primary and up to 5 replica nodes
+
+## Route 53
+
+### What is DNS?
+
+- Domain Name System
+  - Translates human friendly hostnames to IP addresses
+- Uses a hierarchical naming structure
+- Domain registrar
+  - Where you register your domain name
+- DNS Records
+  - A, CNAME etc.
+- Zone File
+  - Contains DNS records
+- Name Server
+  - Resolved DNS queries
+- Top Level Domain
+  - e.g. .com  .us .gov .org
+- Second Level Domain
+  - e.g. amazon.com, google.com
+
+### Overview
+
+- Route 53 is a Domain Name System & Domain Registrar
+- Ability to check resources health
+- 100% availability
+
+### Record Types
+
+- A - Maps hostname to IPv4
+- AAAA - Maps a hostname to IPv6
+- CNAME - maps a hostname to another hostname
+  - The target is a domain name which must have anA or AAAA record
+  - Can't create a CNAME record for the top node of a DNS namespace
+- NS - Name Servers for the hosted Zone
+
+
+
