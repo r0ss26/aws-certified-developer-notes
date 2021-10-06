@@ -616,5 +616,60 @@ High availability
   - Can't create a CNAME record for the top node of a DNS namespace
 - NS - Name Servers for the hosted Zone
 
+### Time To Live (TTL)
 
+- Client will cache the result for the duration of the TTL
+- If the client requests the same hostname a query will not be sent to the DNS
+- The request will be sent straight to the web server rather than to the DNS
+- TTL is mandatory for all records except ALIAS records 
 
+### CNAME Vs ALIAS
+
+- AWS Resouces expose an AWS hostname
+- CNAME
+  - Point a hostname to any other hostname
+  - only for non root domain e.g.. something.mydomain.com
+- ALIAS
+  - Points a hostnae to an AWS resource
+  - works for root domain and non root domain
+  - Always of type A or AAAA (ipv4/ipv6)
+  - Targets
+    - Load Balancers
+    - CloudFront Distributions
+    - API Gateway
+    - Elastic beanstalk environments
+    - S3 websites
+    - VPC interface endpoints
+    - etc.
+
+### Routing Policies
+
+- Defines how Route 53 respons to DNS queries
+- Does not route traffic but responds to DNS queries
+- Simple
+  - Route traffic to a single resource
+- Weighted
+  - Control the % of the requests that go to each specific resource
+  - DNS records must have the samme name and type
+  - Can be associated with health checks
+  - used for load balancing between regions
+- Latency
+  - Redirect to the resouce that has the least latency
+  - based on traffic between users and aws regions
+  - Can be associated with health checks
+
+### Health Checks
+
+- Provides automated DNS failover
+- Can monitor an app, server, aws resource or cloudwatch resource
+- Calculated health checks
+  - A parent health check monitors multiple child health checks combined with boolean operators
+
+### Failover
+
+- Associate primary DNS record with a health check
+- If this is unhealthy divert the DNS request to the secondary IP
+
+### Geolocation
+
+- Routing based on user location
