@@ -629,6 +629,8 @@ High availability
 - CNAME
   - Point a hostname to any other hostname
   - only for non root domain e.g.. something.mydomain.com
+  - CNAME is a Canonical Name used for linking a subdomain to the apex domain
+  - e.g. my.cool.domain.com => domain.com
 - ALIAS
   - Points a hostnae to an AWS resource
   - works for root domain and non root domain
@@ -650,7 +652,7 @@ High availability
   - Route traffic to a single resource
 - Weighted
   - Control the % of the requests that go to each specific resource
-  - DNS records must have the samme name and type
+  - DNS records must have the same name and type
   - Can be associated with health checks
   - used for load balancing between regions
 - Latency
@@ -673,3 +675,20 @@ High availability
 ### Geolocation
 
 - Routing based on user location
+
+### Geoproximity
+
+- Route traffic ro your resources based on the grographic location of users and resources
+- ability to shift morer traffic to resources based on the bias
+- Toc ahnge the size of the g eographic region, specify the bias values
+- resources can be
+  - aws resource
+  - non aws resource (e.g. on premises servers)
+- Use route 53 traffic flow
+
+### Routing Policies
+
+- Used when routing traffic to multiple resosurces
+- Up to 8 healthy recoords are returned for each multi-value-query
+- Not a substitute for an ELB (this is client side as it only queries DNS)
+- Can be associated with health checks
