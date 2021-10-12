@@ -236,7 +236,7 @@ Point of presence (edge locations)
 
 - EBS volumes can only be attached to one instance at a time and are locked to a single AZ
 - Root EBS volumes of instances get terminated by default
-- Can be mounted to multiple EC2 across different Availability Zones
+- EFS Can be mounted to multiple EC2 across different Availability Zones
 - EFS share website files
 - EFS is only for linux instances
 - EFS is more expensive (3x)
@@ -680,7 +680,7 @@ High availability
 
 - Route traffic ro your resources based on the grographic location of users and resources
 - ability to shift morer traffic to resources based on the bias
-- Toc ahnge the size of the g eographic region, specify the bias values
+- To change the size of the geographic region, specify the bias values
 - resources can be
   - aws resource
   - non aws resource (e.g. on premises servers)
@@ -692,3 +692,70 @@ High availability
 - Up to 8 healthy recoords are returned for each multi-value-query
 - Not a substitute for an ELB (this is client side as it only queries DNS)
 - Can be associated with health checks
+
+## Virtual Private Cloud (VPC)
+
+- Private netowrk to deployr your resources within AWS cloud
+- Regional Resource
+  - One VPC per region
+- Subnets
+  - Allow you to partition  your network inside your VPC
+  - Defined at the availability zone level
+  - Public subnet - accessible from the internet
+  - Private subnet - private to your VPC
+  - Route tables define access to the internet and between subnets
+- Internet gateways & NAT gateways
+  - public subnets use internet gateways to connect to the internet
+  - Private subnets can use NAT gateways to taccess the internet while remaining on your private VPC
+  - NAT gateways are aws managed
+  - nat instances are self managed
+  - This is done by deploying a NAT instance on your public subnet and connect your instance on your private VPC to the NAT on the public subnet
+
+### Network ACL & Security Groups
+
+- NACL
+  - Firewall that controls traffic from and to the subnet
+  - Uses allow and deny rules
+  - Attached at the subnet level
+  - Rules only include IP addresses e.g. allow from these IP addresses
+- Security Groups
+  - A firewall that controls traffic to and from and ENI/EC2 instance
+  - Only has allow rules
+  - Can include IP addresses or other security groups
+
+### VPC Flow Logs
+
+- Captures information about IP traffic going into your interfaces
+- Used for monitoring and troubleshooting connectivity issues
+
+### VPC Peering
+
+- Connect two VPC, privately using AWS' network
+- Behave as if they are in the same network
+- Must not have overlapping CIDR (IP address range)
+- Not transitive - must be established for each VPC e.g. if A connects to B and A connects to C, A is not connected to C
+
+### VPC Endpoints
+
+- Allow you to connect to AWS services using a private network
+- Enhanced security and lower latency to access aws services
+
+### Site to Site VPN & Direct Connect
+
+- Site to Site
+  - Connect an on-premises VPN to AWS
+  - Encrypted over the public internet
+- Direct Connect
+  - Physical connection between on premisese and AWS
+  - Private secure and fasst
+  - Goes over a private network
+- Both cannot access VPC endpoints
+
+### Typical 3-Teir solution architecture
+
+- ELB deployed on public subnet
+- EC2 instances deployed on private subnet
+- Amazon RDS (database) stored on a data subnet along with elasticache
+  - Elasticache used to store/retrieve session data and cached data
+
+**To Review**: Gateway endpoints and interfaces, route tables, NACL
