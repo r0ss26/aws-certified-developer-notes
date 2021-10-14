@@ -711,7 +711,7 @@ High availability
   - nat instances are self managed
   - This is done by deploying a NAT instance on your public subnet and connect your instance on your private VPC to the NAT on the public subnet
 
-### Network ACL & Security Groups
+### Network ACL (Access Control List) & Security Groups
 
 - NACL
   - Firewall that controls traffic from and to the subnet
@@ -738,7 +738,18 @@ High availability
 ### VPC Endpoints
 
 - Allow you to connect to AWS services using a private network
+- Used for private access to AWS services within your VPC i.e. not over the internet
 - Enhanced security and lower latency to access aws services
+- Use case: When your AWS service (e.g. EC2 instance) is on a private subnet, and you want it to communicate with another AWS service but you don't want to use an internet gateway, nat device, VPN connection or AWS Direct Connection. This allows you to not expose your VPC to the internet.
+- Interface endpoint
+  - A network interface with a private IP address from the IP address from the IP address range of your subnet.
+  - Serves as an entry point for traffic destined to a service that is owned by AWS.
+- Gateway load balance endpoint
+  - Intercepts traffic and routes it to a network or security service that you have configured using a gateway load balancer.
+  - Specify this as a target foor a route in a route table.
+  - Only supported for endpoint services that are configured using a gateway load balancer
+- Gateway endpoints
+  - A target for a route in your route table used for traffic destined to either Amazon S3 or DynamoDB
 
 ### Site to Site VPN & Direct Connect
 
