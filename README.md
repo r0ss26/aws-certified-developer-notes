@@ -770,3 +770,125 @@ High availability
   - Elasticache used to store/retrieve session data and cached data
 
 **To Review**: Gateway endpoints and interfaces, route tables, NACL
+
+## Amazon S3
+
+- S3 is 'infinitely scaling storage'
+
+### Buckets
+
+- Store objects (files) in buckets (folders)
+- Globally unique name
+
+### Objects
+
+- Objects are files
+- They have a key which is the full file path starting from the bucket name
+  - Composed of prefix + object name
+- Maximum size is 5TB, 5GB per upload limit
+- Objects contain metadata
+  - Key value pairs
+- Objects contain tags
+  - key value pairs useful for security
+- Version ID (if versioning is enables)
+
+### Versioning
+
+- Versioning is enabled at the bucket level
+- If an object (file) is uploaded with the same key as an existing object it will overwrite it and increment the version
+- Allows you to restore a previous version
+- Deleting an object when versioning is enables doesn't permanently delete it, it makes a delete marker which is the current version of the object and can be restored
+  - To permanently delete this version you delete the delete marker, or you can delete the version with a specific object id by listing all versions and permanently deleting an object version
+
+### Encryption (for objects)
+
+- There are 4 methods for encrypting S3 objects
+  - SSE-S#
+    - uses keys handled and managed by AWS
+  - SSE-KMS
+    - Use AWS key management service to manage encryption kes
+  - SSE-C
+    - Manage your own encryption keys
+  - Client side encryption
+- Default encryption applies to objects that are uploaded with no specified encryption
+- Encryption applies to a version of an object
+
+#### SSE-S3
+
+-  Must use HTTP/S header "x-amz-server-side-encryption": "AES256" when uploading files
+- AWS will then apply S3 managed data key to encrypt into S3 bucket
+
+#### SSE-KMS
+
+- Keys handled and managed by AWS Key Management Service
+  - Control who has access to which keys
+  - Controls audit trails
+- Set header "x-amz-server-side-encryption": "aws:kms"
+
+#### SSE-C
+
+- Keys are managed by the customer outside of AWS
+- S3 does not store encryption key you provide
+- Must use HTTPS
+- Encryption key provided in HTTP headers for every HTTP request made
+- Must provide the same key to retrieve the object
+
+#### Client side encryption
+
+- User encrypts the object before uploading to S3
+- Can use libraries to help encrypt e.g. AWS S3 encryption client
+- The user/customer is responsible for decrypting the object using the key they used to encrypt the file
+
+#### Encryption in transit
+
+- S3 exposes http and https endpoints
+
+### Security & Bucket Policies
+
+- User based
+  - Which API calls are allowed for a specific user from IAM console
+- Resource based
+  - Bucket wide rules from the S3 console
+  - Object Access Control List (finer grain)
+- Policies
+  - JSON based policies 
+  - Common use cases
+    - Grant public access to a bucket
+    - Encrypt objects at upload
+- Block public Access
+  - You can block public access to buckets and objects granted through
+    - Access control lists
+    - Access point policies
+  - Used to prevent company data leaks
+- Networking
+  - Supports VPC endpoints
+- Logging and Audit
+  - Access logs can be stored in an S3 bucket
+  - API calls logged in cloudtrail
+- User security
+  - MFA delete can be required in versioned buckets to delete objects
+  - Pre signed URLS: URLs that are only valid for a limited time for logged in users
+
+### S3 Websites
+
+- S3 can be used to host static websites
+- Configure static website host in properties
+- Allow public access and create a policy to allow getobject requests to your website files
+
+### S3 CORS (Cross Origin Resource Sharing)
+
+#### CORS
+
+- Origin
+  - Scheme, host and port e.g. https://www.example.com
+  - https is the scheme, www.example.com is the host and port 443 is the default port for https
+- CORS is a web browser based security mechanism to allows requests to other origins while visiting the main origin
+- The request won't be fulfilled across origins unless the other origin allows for the requests using the CORS headers (access-control-allow-origin)
+- When you request another origin a preflight check/request occurs which is an OPTIONS request to / 
+  - The response returns the allowed origins and the allowed methods
+
+#### S3 CORS
+
+- If a client does a cross origin request on our s3 bucket we need to enable the correct cors headers
+- You can allow a specific origin or * (all origins)
+
